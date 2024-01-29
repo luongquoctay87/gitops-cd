@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: auth:1.0.0-48
+          image: luongquoctay87/auth:1.0.0-48
           imagePullPolicy: IfNotPresent
           resources:
             requests:
