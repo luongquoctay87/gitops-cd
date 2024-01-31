@@ -4,6 +4,7 @@ metadata:
   name: auth-deployment
   namespace: default
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: auth
