@@ -1,0 +1,1 @@
+# GitOps - Manifest for DevOps
