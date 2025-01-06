@@ -4,13 +4,13 @@ pipeline{
         maven 'MAVEN'
     }
     environment {
-        APP_NAME = "auth-service"
+        APP_NAME = "backend-service"
         RELEASE = "1.0.0"
         DOCKER_USER = "luongquoctay87"
         DOCKER_PASS = 'Dockerhub'
         IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-        JENKINS_API_TOKEN = credentials('JENKINS_API_TOKEN')
+        // JENKINS_API_TOKEN = credentials('JENKINS_API_TOKEN')
     }
     stages {
         stage ('Clean workspace') {
@@ -21,19 +21,19 @@ pipeline{
 
         stage("Checkout from SCM"){
             steps {
-                git branch: 'master', credentialsId: 'GitHub', url: 'https://github.com/luongquoctay87/authentication'
-            }
-        }
-
-        stage("Build Application"){
-            steps {
-                sh "mvn clean package"
+                git branch: 'master', credentialsId: 'GitHub', url: 'https://github.com/luongquoctay87/backend-service'
             }
         }
 
         stage("Test Application"){
             steps {
                 sh "mvn test"
+            }
+        }
+
+        stage("Build Application"){
+            steps {
+                sh "mvn clean package"
             }
         }
 
@@ -47,13 +47,13 @@ pipeline{
             }
         }
 
-        stage("Quality Gate") {
-            steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonarQube'
-                }
-            }
-        }
+        // stage("Quality Gate") {
+        //     steps {
+        //         script {
+        //             waitForQualityGate abortPipeline: false, credentialsId: 'sonarQube'
+        //         }
+        //     }
+        // }
 
         stage("Build & Push Docker Image") {
             steps {
@@ -75,13 +75,13 @@ pipeline{
             }
         }
 
-        stage("Trigger CD Pipeline") {
-            steps {
-                script {
-                    sh "curl -v -k --user jenkins:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'http://127.0.0.1:8080/job/auth-service-cd/buildWithParameters?token=gitops-token'"
-                }
-            }
-        }
+        // stage("Trigger CD Pipeline") {
+        //     steps {
+        //         script {
+        //             sh "curl -v -k --user jenkins:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'http://127.0.0.1:8080/job/auth-service-cd/buildWithParameters?token=gitops-token'"
+        //         }
+        //     }
+        // }
 
         stage("Cleanup Artifacts") {
             steps {
